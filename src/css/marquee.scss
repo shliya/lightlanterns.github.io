@@ -1,19 +1,10 @@
-*, *::before, *::after {
-    box-sizing: border-box;
-    color: inherit;
-    list-style: none;
-}
-html, body {
-    margin: 0;
-    padding: 0;
-    background-color: #e8e8e8;
-}
+
 @keyframes marquee-left {
     0% {
         transform: translateX(0);
    }
     100% {
-        transform: translateX(-100%);
+        transform: translateX(-40%);
    }
 }
 @media (max-width: 1024px) {
@@ -22,7 +13,7 @@ html, body {
             transform: translateX(0);
        }
         100% {
-            transform: translateX(-125%);
+            transform: translateX(-40%);
        }
    }
 }
@@ -32,13 +23,9 @@ html, body {
             transform: translateX(0);
        }
         100% {
-            transform: translateX(-166.65%);
+            transform: translateX(-83.32%);
        }
    }
-}
-#marquee-left {
-    padding: 50px 0;
-    width: 100%;
 }
 #marquee-left .view {
     overflow: hidden;
@@ -51,6 +38,8 @@ html, body {
 #marquee-left .pic-container .pic {
     flex-basis: 20%;
     flex-shrink: 0;
+    margin: 0 -5%;
+    list-style: none;
 }
 @media (max-width: 1024px) {
     #marquee-left .pic-container .pic {
@@ -66,14 +55,9 @@ html, body {
     width: 50%;
     vertical-align: middle;
 }
-*, *::before, *::after {
-    box-sizing: border-box;
-    color: inherit;
-    list-style: none;
-}
 @keyframes marquee-right {
     0% {
-        transform: translateX(-100%);
+        transform: translateX(-40%);
    }
     100% {
         transform: translateX(0);
@@ -82,7 +66,7 @@ html, body {
 @media (max-width: 1024px) {
     @keyframes marquee-right {
         0% {
-            transform: translateX(-125%);
+            transform: translateX(-40%);
        }
         100% {
             transform: translateX(0);
@@ -92,7 +76,7 @@ html, body {
 @media (max-width: 768px) {
     @keyframes marquee-right {
         0% {
-            transform: translateX(-166.65%);
+            transform: translateX(-83.32%);
        }
         100% {
             transform: translateX(0);
@@ -118,6 +102,8 @@ html, body {
 #marquee-right .pic-container .pic {
     flex-basis: 20%;
     flex-shrink: 0;
+    margin: 0 -5%;
+    list-style: none;
 }
 @media (max-width: 1024px) {
     #marquee-right .pic-container .pic {
