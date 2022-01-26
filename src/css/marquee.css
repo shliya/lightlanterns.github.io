@@ -1,4 +1,3 @@
-
 @keyframes marquee-left {
     0% {
         transform: translateX(0);
@@ -27,35 +26,34 @@
        }
    }
 }
-#marquee-left .view {
+.marquee-left .view {
     overflow: hidden;
     width: 100%;
-    
 }
-#marquee-left .pic-container {
+.marquee-left .pic-container {
     display: flex;
     animation: marquee-left 10s infinite linear;
 }
-#marquee-left .pic-container:hover{
+.marquee-left .pic-container:hover {
     animation-play-state: paused;
 }
-#marquee-left .pic-container .pic {
+.marquee-left .pic-container .pic {
     flex-basis: 20%;
     flex-shrink: 0;
     margin: 0 -5%;
     list-style: none;
 }
 @media (max-width: 1024px) {
-    #marquee-left .pic-container .pic {
+    .marquee-left .pic-container .pic {
         flex-basis: 25%;
    }
 }
 @media (max-width: 768px) {
-    #marquee-left .pic-container .pic {
+    .marquee-left .pic-container .pic {
         flex-basis: 33.33%;
    }
 }
-#marquee-left img {
+.marquee-left img {
     width: 63%;
     vertical-align: middle;
 }
@@ -95,7 +93,6 @@
     flex-direction: column;
     justify-content: space-between;
     animation-play-state: paused;
-
 }
 #marquee-right .view {
     overflow: hidden;
@@ -105,7 +102,7 @@
     display: flex;
     animation: marquee-right 10s infinite linear;
 }
-#marquee-right .pic-container:hover{
+#marquee-right .pic-container:hover {
     animation-play-state: paused;
 }
 #marquee-right .pic-container .pic {
@@ -128,7 +125,6 @@
     width: 63%;
     vertical-align: middle;
 }
-
-.view:hover~.animation {
+.view:hover ~ .animation {
     animation-play-state: paused;
-    }
+}
