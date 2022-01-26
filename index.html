@@ -61,6 +61,7 @@
         picDiv.appendChild(aTag);
         picContainerDiv.appendChild(picDiv)
       }
+
     }
 
     while (start <= floor) {
@@ -68,6 +69,9 @@
       if (start === 1) {
         targetDiv = left1Div;
         testFunc(start - 1, limit, data, targetDiv);
+        testFunc(start - 1, limit, data, targetDiv);
+        testFunc(start - 1, limit, data, targetDiv);
+
       } else {
         if (start === 2) {
           targetDiv = rightDiv;
@@ -75,6 +79,8 @@
           targetDiv = left2Div;
 
         }
+        testFunc(limit * (start - 1), limit * start, data, targetDiv);
+        testFunc(limit * (start - 1), limit * start, data, targetDiv);
         testFunc(limit * (start - 1), limit * start, data, targetDiv);
       }
       start++

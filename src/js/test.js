@@ -6,14 +6,4 @@ fs.readdir(folderPath, (err, files) => {
     files.forEach(file => {
         outputArray.push(file);
     });
-    // outputArray = outputArray.sort((a,b)=>{
-        
-    // });
-    console.log(outputArray[0].split('_'));
-    // fs.writeFile("./test.json", JSON.stringify(outputArray), (err, files) => {
-    //     if (err)
-    //         console.log(err);
-    //     else
-    //         console.log('Write operation complete.');
-    // })
 })
