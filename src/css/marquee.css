@@ -27,23 +27,28 @@
    }
 }
 .marquee-left .view {
-    overflow: hidden;
+    /* overflow: hidden; */
     width: 100%;
 }
 .marquee-left .pic-container {
     display: flex;
-    animation: marquee-left 500S infinite linear;
+    /* animation: marquee-left 500S infinite linear; */
 
 }
 .marquee-left .pic-container:hover {
     animation-play-state: paused;
 }
 .marquee-left .pic-container .pic {
-    flex-basis: 20%;
-    flex-shrink: 0;
-    margin: 0 -5%;
+    /* flex-basis: 20%;
+    flex-shrink: 0; */
+    /* margin: 0 -5%; */
     list-style: none;
 }
+/* .marquee-left .pic-container .pic a img :hover{
+    content: url(../image/光明燈_暗.png);
+    width: 63%;
+    vertical-align: middle;
+} */
 @media (max-width: 1024px) {
     .marquee-left .pic-container .pic {
         flex-basis: 25%;
@@ -88,7 +93,7 @@
 }
 #marquee-right {
     width: 100%;
-    overflow: hidden;
+    /* overflow: hidden; */
     position: relative;
     display: flex;
     flex-direction: column;
@@ -96,7 +101,7 @@
     animation-play-state: paused;
 }
 #marquee-right .view {
-    overflow: hidden;
+    /* overflow: hidden; */
     width: 100%;
 }
 #marquee-right .pic-container {
@@ -107,9 +112,9 @@
     animation-play-state: paused;
 }
 #marquee-right .pic-container .pic {
-    flex-basis: 20%;
-    flex-shrink: 0;
-    margin: 0 -5%;
+    /* flex-basis: 20%;
+    flex-shrink: 0; */
+    /* margin: 0 -5%; */
     list-style: none;
 }
 @media (max-width: 1024px) {
@@ -128,4 +133,10 @@
 }
 .view:hover ~ .animation {
     animation-play-state: paused;
+}
+
+.pic a:hover{
+    content: url("../image/光明燈_亮.png");
+    width: 63%;
+    vertical-align: middle;
 }

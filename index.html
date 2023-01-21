@@ -1,49 +1,61 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <link rel="stylesheet" href="./src/css/marquee.css" />
+  </head>
 
-<head>
-  <link rel="stylesheet" href="./src/css/marquee.css">
-</head>
+  <body style="background-image: url(./src/image/背景.jpg)">
+    <div id="section_scope"></div>
+  </body>
+  <script>
+    let getJSON = async (path) => {
+      let baseUrl = "./src/image/manylight/";
+      let lightDefault = "./src/image/";
+      let response = await fetch(path);
+      let data = await response.json();
+      let sectionScporDiv = document.getElementById("section_scope");
+      let sectionCount = Math.ceil(data.length / 6);
+      for (let i = 0; i < sectionCount; i++) {
+        let newsection = document.createElement("section");
+        newsection.id = `select${i + 1}`;
+        newsection.className = "marquee-left";
 
-<body style="background-image: url(./src/image/背景.jpg);">
-  <section class="marquee-left" id="marquee-left1">
-    <div class="view">
-      <div class="pic-container">
-      </div>
-  </section>
-  <section id="marquee-right">
-    <div class="view">
-      <div class="pic-container">
-      </div>
-  </section>
-  <section class="marquee-left" id="marquee-left2">
-    <div class="view">
-      <div class="pic-container">
-      </div>
-    </div>
-  </section>
-</body>
-<script>
-  let getJSON = async (path) => {
-    let left1Div = document.getElementById('marquee-left1');
-    let left2Div = document.getElementById('marquee-left2');
-    let rightDiv = document.getElementById('marquee-right');
-    let baseUrl = "./src/image/manylight/"
-    let response = await fetch(path)
-    let data = await response.json();
-    let floor = 3;
-    let start = 1;
-    let limit = 103;
-    let testFunc = (index, limit, data, targetDiv) => {
-      let picContainerDiv = targetDiv.children[0].children[0];
+        let newSectionView = document.createElement("div");
+        newSectionView.className = "view";
 
-      for (let i = index; i < limit; i++) {
+        let newPicContainer = document.createElement("div");
+        newPicContainer.className = "pic-container";
+
+        newSectionView.appendChild(newPicContainer);
+        newsection.appendChild(newSectionView);
+        sectionScporDiv.appendChild(newsection);
+      }
+
+      let count = 0;
+      let firstSection = 1;
+
+      for ([i, lightData] of data.entries()) {
+        if (count % 7 === 0) {
+          count = 0;
+          firstSection++;
+        }
+        count += 1;
+
+        let targetDiv = document.getElementById(`select${firstSection}`);
+        let picContainerDiv = targetDiv.children[0].children[0];
         let picDiv = document.createElement("div");
-        picDiv.className = "pic"
+        picDiv.className = "pic";
         picDiv.style.flexBasis = "20%";
         picDiv.style.flexShrink = "0";
-        picDiv.style.margin = "0 -5%";
+        picDiv.style.margin = "0px -8% 0% 2%";
         picDiv.style.listStyle = "none";
+        picDiv.onclick = (event) => {
+          if (event.target.children[0].children.length !== 0) {
+            return;
+          } else {
+            event.target.children[0].style.content = `url(${lightDefault}光明燈_亮.png)`;
+          }
+        };
         if (window.matchMedia("(max-width: 1024px)").matches) {
           picDiv.style.flexBasis = "25%";
         } else if (window.matchMedia("(max-width: 768px)").matches) {
@@ -52,40 +64,17 @@
         let aTag = document.createElement("a");
         aTag.href = `${baseUrl}${data[i]}`;
         aTag.target = "_blank";
-        aTag.rel = "noopener noreferrer nofollow"
+        aTag.rel = "noopener noreferrer nofollow";
 
-        let imgTag = document.createElement("img");
-        imgTag.src = `${baseUrl}${data[i]}`
+        let imgTagBlack = document.createElement("img");
+        imgTagBlack.style.content = `url(${lightDefault}光明燈_暗.png)`;
 
-        aTag.appendChild(imgTag)
+        aTag.appendChild(imgTagBlack);
         picDiv.appendChild(aTag);
-        picContainerDiv.appendChild(picDiv)
+        picContainerDiv.appendChild(picDiv);
       }
-
-    }
-
-    while (start <= floor) {
-      let targetDiv = "";
-      if (start === 1) {
-        targetDiv = left1Div;
-        testFunc(start - 1, limit, data, targetDiv);
-        testFunc(start - 1, limit, data, targetDiv);
-        testFunc(start - 1, limit, data, targetDiv);
-
-      } else {
-        if (start === 2) {
-          targetDiv = rightDiv;
-        } else {
-          targetDiv = left2Div;
-        }
-        testFunc(limit * (start - 1), limit * start, data, targetDiv);
-        testFunc(limit * (start - 1), limit * start, data, targetDiv);
-        testFunc(limit * (start - 1), limit * start, data, targetDiv);
-      }
-      start++
-    }
-  }
-  getJSON("./src/js/test.json")
-</script>
-
+    };
+    getJSON("./src/js/2023.json");
+    document.addEventListener;
+  </script>
 </html>

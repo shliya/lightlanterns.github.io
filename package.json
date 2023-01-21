@@ -1,0 +1,24 @@
+{
+  "name": "lightlanterns",
+  "version": "1.0.0",
+  "description": "description",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "main": "main.js",
+  "devDependencies": {
+    "electron": "^22.0.2",
+    "electron-builder": "^23.6.0"
+  },
+  "build": {
+    "appId": "lightlanterns",
+    "win": {
+      "icon": "./lightlanterns.png",
+      "target": [
+        "portable"
+      ]
+    }
+  }
+}

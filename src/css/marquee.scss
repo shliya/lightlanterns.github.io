@@ -34,7 +34,7 @@
 }
 #marquee-left .pic-container {
     display: flex;
-    animation: marquee-left 10s infinite linear;
+    // animation: marquee-left 10s infinite linear;
 }
 #marquee-left .pic-container:hover{
     animation-play-state: paused;
