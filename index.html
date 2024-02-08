@@ -1,12 +1,47 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="./src/css/marquee.css" />
+    <link rel="stylesheet" href="./src/css/main.css" />
   </head>
-
-  <body style="background-image: url(./src/image/背景.jpg)">
+  <body>
     <div id="section_scope"></div>
+
+    <header
+      style="
+        background: rgb(52, 86, 155);
+        background: linear-gradient(
+          to bottom,
+          rgba(52, 86, 155, 1) 0%,
+          rgba(79, 164, 221, 1) 100%
+        );
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#34569b', endColorstr='#4fa4dd',GradientType=0 );
+        margin-bottom: 15px;
+      "
+    >
+      <div class="container">
+        <a>
+          <img
+            style="height: 80px"
+            src="./src/image/土芒果社_logo.png"
+            alt="土芒果社後備軍人網路服務臺"
+            title="土芒果社後備軍人網路服務臺"
+          />
+          <h3
+            style="
+              position: relative;
+              bottom: 20px;
+              /* top: 5px; */
+              display: inline-table;
+            "
+          >
+            土芒果社後備軍人網路服務臺
+          </h3>
+        </a>
+      </div>
+    </header>
   </body>
+
+  <!--
   <script>
     let getJSON = async (path) => {
       let baseUrl = "./src/image/manylight/";
@@ -76,5 +111,5 @@
     };
     getJSON("./src/js/2023.json");
     document.addEventListener;
-  </script>
+  </script> -->
 </html>
