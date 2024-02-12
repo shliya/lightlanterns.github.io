@@ -1,115 +1,128 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="./src/css/main.css" />
-  </head>
-  <body>
-    <div id="section_scope"></div>
 
-    <header
-      style="
-        background: rgb(52, 86, 155);
-        background: linear-gradient(
-          to bottom,
-          rgba(52, 86, 155, 1) 0%,
-          rgba(79, 164, 221, 1) 100%
-        );
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#34569b', endColorstr='#4fa4dd',GradientType=0 );
-        margin-bottom: 15px;
-      "
-    >
-      <div class="container">
-        <a>
-          <img
-            style="height: 80px"
-            src="./src/image/土芒果社_logo.png"
-            alt="土芒果社後備軍人網路服務臺"
-            title="土芒果社後備軍人網路服務臺"
-          />
-          <h3
-            style="
+<head>
+  <link rel="stylesheet" href="./src/css/main.css" />
+</head>
+
+<body>
+  <div id="section_scope"></div>
+
+  <header>
+    <div class="container">
+      <a>
+        <img style="margin-top: -1%;
+            height: 70px;" src="./src/image/土芒果社_logo.png" alt="土芒果社後備軍人網路服務臺" title="土芒果社後備軍人網路服務臺" />
+        <h3 class="header_title" style="
               position: relative;
               bottom: 20px;
-              /* top: 5px; */
               display: inline-table;
-            "
-          >
-            土芒果社後備軍人網路服務臺
-          </h3>
-        </a>
-      </div>
-    </header>
-  </body>
+            ">
+          土芒果社後備軍人網路服務臺
+        </h3>
+      </a>
+    </div>
+  </header>
 
-  <!--
-  <script>
-    let getJSON = async (path) => {
-      let baseUrl = "./src/image/manylight/";
-      let lightDefault = "./src/image/";
-      let response = await fetch(path);
-      let data = await response.json();
-      let sectionScporDiv = document.getElementById("section_scope");
-      let sectionCount = Math.ceil(data.length / 6);
-      for (let i = 0; i < sectionCount; i++) {
-        let newsection = document.createElement("section");
-        newsection.id = `select${i + 1}`;
-        newsection.className = "marquee-left";
+  <div class="container">
+    <h3 class="title">果招（光明燈）資料查詢</h3>
+    <p class="question">如有疑問可諮詢「土芒果社服務台」或電免付費服務電話：0800-...沒有電話，不給申訴，抽就對了。</p>
+  </div>
 
-        let newSectionView = document.createElement("div");
-        newSectionView.className = "view";
+  <div id="gender-select"  class="container" style="display: flex;">
+    <img onclick="setGender(1)" class="male"></img>
+    <img onclick="setGender(2)" class="female"></img>
 
-        let newPicContainer = document.createElement("div");
-        newPicContainer.className = "pic-container";
+  </div>
 
-        newSectionView.appendChild(newPicContainer);
-        newsection.appendChild(newSectionView);
-        sectionScporDiv.appendChild(newsection);
-      }
+  <div id="lightdraw" class="container">
+    <dialog id="checkDialog">
+      <p>抽不到嗎？要不要保底自選？</p>
+      <form method="dialog">
+        <button onclick="">要</button>
+        <button onclick="doubleCheck()">不要</button>
+      </form>
+    </dialog>
 
-      let count = 0;
-      let firstSection = 1;
+    <dialog id="soldierDialog">
+      <p>錯過這個村就沒有這個店囉，你確定要跳過保底嗎？</p>
+      <form method="dialog">
+        <button onclick="closeDialog()">跳過</button>
+        <button onclick="">不要</button>
+      </form>
+    </dialog>
 
-      for ([i, lightData] of data.entries()) {
-        if (count % 7 === 0) {
-          count = 0;
-          firstSection++;
-        }
-        count += 1;
+    <img onclick="swipe()" class="card"></img>
+  </div>
+</body>
 
-        let targetDiv = document.getElementById(`select${firstSection}`);
-        let picContainerDiv = targetDiv.children[0].children[0];
-        let picDiv = document.createElement("div");
-        picDiv.className = "pic";
-        picDiv.style.flexBasis = "20%";
-        picDiv.style.flexShrink = "0";
-        picDiv.style.margin = "0px -8% 0% 2%";
-        picDiv.style.listStyle = "none";
-        picDiv.onclick = (event) => {
-          if (event.target.children[0].children.length !== 0) {
-            return;
-          } else {
-            event.target.children[0].style.content = `url(${lightDefault}光明燈_亮.png)`;
-          }
-        };
-        if (window.matchMedia("(max-width: 1024px)").matches) {
-          picDiv.style.flexBasis = "25%";
-        } else if (window.matchMedia("(max-width: 768px)").matches) {
-          picDiv.style.flexBasis = "33.33%";
-        }
-        let aTag = document.createElement("a");
-        aTag.href = `${baseUrl}${data[i]}`;
-        aTag.target = "_blank";
-        aTag.rel = "noopener noreferrer nofollow";
+<script>
+  let drawCount = 0;
+  const checkDialog = document.getElementById("checkDialog");
+  const soldierDialog = document.getElementById("soldierDialog");
 
-        let imgTagBlack = document.createElement("img");
-        imgTagBlack.style.content = `url(${lightDefault}光明燈_暗.png)`;
 
-        aTag.appendChild(imgTagBlack);
-        picDiv.appendChild(aTag);
-        picContainerDiv.appendChild(picDiv);
-      }
-    };
-    getJSON("./src/js/2023.json");
-    document.addEventListener;
-  </script> -->
+  let swipe = () => {
+    let basePath = './src/image/manylight/'
+    let number = randon();
+    let url = basePath+number+'.png';
+    window.open(url, 'Image', 'width=largeImage.stylewidth,height=largeImage.style.height,resizable=1');
+  }
+
+  let setGender = (type) =>{
+    let genderElement =  document.getElementById("gender-select");
+    let lightdrawElement = document.getElementById("lightdraw");
+    genderElement.style.display = "none";
+    sessionStorage.setItem("gender",type);
+    sessionStorage.setItem("drawCount",drawCount);
+    lightdrawElement.style.display="block";
+  }
+
+  let randon = () => {
+    let array = new Uint16Array(1);
+    crypto.getRandomValues(array);
+    let randomNumber = array[0] % 501;
+    drawCount++;
+    sessionStorage.setItem("drawCount",drawCount);
+    checkCount();
+    return randomNumber;
+  }
+
+  let checkCount = () =>{
+    let drawCount = sessionStorage.getItem("drawCount");
+    if(drawCount === "2"){
+      showDialog();
+    }
+  }
+
+  let showDialog = () =>{
+    console.log(checkDialog);
+    console.log(soldierDialog);
+    checkDialog.showModal();
+  }
+
+  let doubleCheck = () =>{
+    checkDialog.close();
+    soldierDialog.showModal();
+  }
+
+  let closeDialog = () => {
+    let gender = sessionStorage.getItem("gender");
+    if(gender === "1"){
+      window.location.assign("https://afrc.mnd.gov.tw/EFR/Default.aspx");
+    }
+    soldierDialog.close();
+  }
+
+  window.onload = () =>{
+    let genderType = sessionStorage.getItem("gender");
+    let lightdrawElement = document.getElementById("lightdraw");
+    let genderElement =  document.getElementById("gender-select");
+    if(!!genderType !== false){
+      genderElement.style.display = "none";
+      lightdrawElement.style.display="block";
+    }
+  }
+
+</script>
 </html>
