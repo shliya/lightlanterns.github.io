@@ -1,128 +1,161 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <link rel="stylesheet" href="./src/css/main.css" />
+    <link rel="stylesheet" href="./src/lightbox/css/lightbox.css" />
+  </head>
 
-<head>
-  <link rel="stylesheet" href="./src/css/main.css" />
-</head>
+  <body>
+    <div id="section_scope"></div>
 
-<body>
-  <div id="section_scope"></div>
+    <header>
+      <div class="container">
+        <a onclick="clearSession()" href=".">
+          <img
+            style="margin-top: -1%; height: 70px"
+            src="./src/image/土芒果社_logo.png"
+            alt="土芒果社後備軍人網路服務臺"
+            title="土芒果社後備軍人網路服務臺"
+          />
+          <h3
+            class="header_title"
+            style="position: relative; bottom: 20px; display: inline-table"
+          >
+            土芒果社後備軍人網路服務臺
+          </h3>
+        </a>
+      </div>
+    </header>
 
-  <header>
     <div class="container">
-      <a>
-        <img style="margin-top: -1%;
-            height: 70px;" src="./src/image/土芒果社_logo.png" alt="土芒果社後備軍人網路服務臺" title="土芒果社後備軍人網路服務臺" />
-        <h3 class="header_title" style="
-              position: relative;
-              bottom: 20px;
-              display: inline-table;
-            ">
-          土芒果社後備軍人網路服務臺
-        </h3>
-      </a>
+      <h3 class="title">果招（光明燈）資料查詢</h3>
+      <p class="question">
+        如有疑問可諮詢「土芒果社服務台」或電免付費服務電話：0800-...沒有電話，不給申訴，抽就對了。
+      </p>
     </div>
-  </header>
 
-  <div class="container">
-    <h3 class="title">果招（光明燈）資料查詢</h3>
-    <p class="question">如有疑問可諮詢「土芒果社服務台」或電免付費服務電話：0800-...沒有電話，不給申訴，抽就對了。</p>
-  </div>
+    <div id="gender-select" class="container" style="display: flex">
+      <img onclick="setGender(1)" class="male" />
+      <img onclick="setGender(2)" class="female" />
+    </div>
 
-  <div id="gender-select"  class="container" style="display: flex;">
-    <img onclick="setGender(1)" class="male"></img>
-    <img onclick="setGender(2)" class="female"></img>
+    <div id="lightdraw" class="container">
+      <dialog id="checkDialog">
+        <p>抽不到嗎？要不要保底自選？</p>
+        <form method="dialog">
+          <button onclick="guarant()">要</button>
+          <button onclick="doubleCheck()">不要</button>
+        </form>
+      </dialog>
+      <dialog id="soldierDialog">
+        <p>錯過這個村就沒有這個店囉，你確定要跳過保底嗎？</p>
+        <form method="dialog">
+          <button onclick="closeDialog()">跳過</button>
+          <button onclick="guarant()">我還是需要那個酷酷的保底</button>
+        </form>
+      </dialog>
+      <img onclick="swipe()" class="card" />
+      <p>目前抽數:</p>
+      <h3 id="draw-count-show"></h3>
+    </div>
 
-  </div>
+    <div id="draw-show" class="container"></div>
+  </body>
 
-  <div id="lightdraw" class="container">
-    <dialog id="checkDialog">
-      <p>抽不到嗎？要不要保底自選？</p>
-      <form method="dialog">
-        <button onclick="">要</button>
-        <button onclick="doubleCheck()">不要</button>
-      </form>
-    </dialog>
+  <script>
+    let drawCount = 0;
+    const checkDialog = document.getElementById("checkDialog");
+    const soldierDialog = document.getElementById("soldierDialog");
+    const clearTitleElement = document.getElementById("clear-title");
 
-    <dialog id="soldierDialog">
-      <p>錯過這個村就沒有這個店囉，你確定要跳過保底嗎？</p>
-      <form method="dialog">
-        <button onclick="closeDialog()">跳過</button>
-        <button onclick="">不要</button>
-      </form>
-    </dialog>
+    let swipe = () => {
+      let drawShowElement = document.getElementById("draw-show");
+      let drawCountShowElement = document.getElementById("draw-count-show");
 
-    <img onclick="swipe()" class="card"></img>
-  </div>
-</body>
+      let basePath = "./src/image/manylight/2024/";
+      let imageUrls = randon(basePath);
+      drawShowElement.innerHTML = "";
+      setLightbox(imageUrls, drawShowElement);
+      drawCountShowElement.innerHTML = drawCount;
+    };
 
-<script>
-  let drawCount = 0;
-  const checkDialog = document.getElementById("checkDialog");
-  const soldierDialog = document.getElementById("soldierDialog");
+    let setLightbox = (imageUrls, drawShowElement) => {
+      for (let i = 0; i < imageUrls.length; i++) {
+        let a = document.createElement("a");
+        let img = document.createElement("img");
+        a.href = imageUrls[i];
+        a.setAttribute("data-lightbox", "roadtrip");
+        img.src = imageUrls[i];
+        img.style.width = "10rem";
+        a.append(img);
+        drawShowElement.append(a);
+      }
+    };
 
-
-  let swipe = () => {
-    let basePath = './src/image/manylight/'
-    let number = randon();
-    let url = basePath+number+'.png';
-    window.open(url, 'Image', 'width=largeImage.stylewidth,height=largeImage.style.height,resizable=1');
-  }
-
-  let setGender = (type) =>{
-    let genderElement =  document.getElementById("gender-select");
-    let lightdrawElement = document.getElementById("lightdraw");
-    genderElement.style.display = "none";
-    sessionStorage.setItem("gender",type);
-    sessionStorage.setItem("drawCount",drawCount);
-    lightdrawElement.style.display="block";
-  }
-
-  let randon = () => {
-    let array = new Uint16Array(1);
-    crypto.getRandomValues(array);
-    let randomNumber = array[0] % 501;
-    drawCount++;
-    sessionStorage.setItem("drawCount",drawCount);
-    checkCount();
-    return randomNumber;
-  }
-
-  let checkCount = () =>{
-    let drawCount = sessionStorage.getItem("drawCount");
-    if(drawCount === "2"){
-      showDialog();
-    }
-  }
-
-  let showDialog = () =>{
-    console.log(checkDialog);
-    console.log(soldierDialog);
-    checkDialog.showModal();
-  }
-
-  let doubleCheck = () =>{
-    checkDialog.close();
-    soldierDialog.showModal();
-  }
-
-  let closeDialog = () => {
-    let gender = sessionStorage.getItem("gender");
-    if(gender === "1"){
-      window.location.assign("https://afrc.mnd.gov.tw/EFR/Default.aspx");
-    }
-    soldierDialog.close();
-  }
-
-  window.onload = () =>{
-    let genderType = sessionStorage.getItem("gender");
-    let lightdrawElement = document.getElementById("lightdraw");
-    let genderElement =  document.getElementById("gender-select");
-    if(!!genderType !== false){
+    let setGender = (type) => {
+      let genderElement = document.getElementById("gender-select");
+      let lightdrawElement = document.getElementById("lightdraw");
       genderElement.style.display = "none";
-      lightdrawElement.style.display="block";
-    }
-  }
+      sessionStorage.setItem("gender", type);
+      sessionStorage.setItem("drawCount", drawCount);
+      lightdrawElement.style.display = "block";
+    };
 
-</script>
+    let randon = (baseurl) => {
+      let numberArray = [];
+      for (let i = 0; i < 10; i++) {
+        let array = new Uint16Array(1);
+        crypto.getRandomValues(array);
+        let randomNumber = array[0] % 477;
+        numberArray.push(baseurl + randomNumber + ".png");
+      }
+      drawCount += 10;
+      sessionStorage.setItem("drawCount", drawCount);
+      checkCount();
+      return numberArray;
+    };
+
+    let checkCount = () => {
+      let drawCount = sessionStorage.getItem("drawCount");
+      if (drawCount === "10") {
+        showDialog();
+      }
+    };
+
+    let showDialog = () => {
+      checkDialog.showModal();
+    };
+
+    let doubleCheck = () => {
+      checkDialog.close();
+      soldierDialog.showModal();
+    };
+
+    let closeDialog = () => {
+      let gender = sessionStorage.getItem("gender");
+      if (gender === "1") {
+        window.location.assign("https://afrc.mnd.gov.tw/EFR/Default.aspx");
+      }
+      soldierDialog.close();
+    };
+
+    let clearSession = () => {
+      sessionStorage.clear();
+    };
+
+    let guarant = () => {
+      window.location.assign("https://drive.google.com/drive/folders/1XUFxTgqhucb1rKx0axg-xOXlaZwxjCMq");
+    };
+
+    window.onload = () => {
+      let genderType = sessionStorage.getItem("gender");
+      let lightdrawElement = document.getElementById("lightdraw");
+      let genderElement = document.getElementById("gender-select");
+      if (!!genderType !== false) {
+        genderElement.style.display = "none";
+        lightdrawElement.style.display = "block";
+      }
+    };
+  </script>
+  <script src="./src/lightbox/js/lightbox-plus-jquery.js"></script>
 </html>

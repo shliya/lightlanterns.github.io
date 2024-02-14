@@ -1,99 +1,138 @@
-html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, dl, dt, dd, ol, ul, li, form, label, table, caption, tbody, tfoot, thead, tr, th, td,
-article, footer, header nav, section, summary {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    vertical-align: baseline;
+html,
+body,
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+form,
+label,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+footer,
+header nav,
+section,
+summary {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
 }
-
 
 header {
-  height:3rem;
-    padding: 10px 0;
-    background: rgb(52, 86, 155);
-    background: -moz-linear-gradient(
-      top,
-      rgba(52, 86, 155, 1) 0%,
-      rgba(79, 164, 221, 1) 100%
-    );
-    background: -webkit-linear-gradient(
-      top,
-      rgba(52, 86, 155, 1) 0%,
-      rgba(79, 164, 221, 1) 100%
-    );
-    background: linear-gradient(
-      to bottom,
-      rgba(52, 86, 155, 1) 0%,
-      rgba(79, 164, 221, 1) 100%
-    );
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#34569b', endColorstr='#4fa4dd',GradientType=0 );
-    margin-bottom: 15px;
-  }
-  
-  body {
-    font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Heiti SC",
-      "Microsoft JhengHei", sans-serif;
-    font-size: 1em;
-    color: #555;
-    height: 100%\0;
-    min-height: 100%;
-    display: flex;
-    display: block\0;
-    flex-direction: column;
-  }
-  .header_title{
-    color: #fff
-  }
-  header{
-    background: rgb(52, 86, 155);
-    background: linear-gradient(
-      to bottom,
-      rgba(52, 86, 155, 1) 0%,
-      rgba(79, 164, 221, 1) 100%
-    );
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#34569b', endColorstr='#4fa4dd',GradientType=0 );
-    margin-bottom: 15px;
-  }
-  .title{
-    border-bottom: 0.2rem solid #0097C5;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    color: #0097C5;
-    font-weight:bold;
-    margin:0 3%;
-  }
-
-  .question{
-    margin:0 3%
-  }
-
-  .card {
-    content: url("../image/光明燈_暗.png");
-    width: 35%;
-    vertical-align: middle;
-    margin: 0 30%;
+  height: 3rem;
+  padding: 10px 0;
+  background: rgb(52, 86, 155);
+  background: -moz-linear-gradient(
+    top,
+    rgba(52, 86, 155, 1) 0%,
+    rgba(79, 164, 221, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    top,
+    rgba(52, 86, 155, 1) 0%,
+    rgba(79, 164, 221, 1) 100%
+  );
+  background: linear-gradient(
+    to bottom,
+    rgba(52, 86, 155, 1) 0%,
+    rgba(79, 164, 221, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#34569b', endColorstr='#4fa4dd',GradientType=0 );
+  margin-bottom: 15px;
 }
-  .card:hover {
-    content: url("../image/光明燈_亮.png");
-    width: 35%;
-    margin: 0 30%;
-    vertical-align: middle;
+
+body {
+  font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Heiti SC",
+    "Microsoft JhengHei", sans-serif;
+  font-size: 1em;
+  color: #555;
+  height: 100%\0;
+  min-height: 100%;
+  display: flex;
+  display: block\0;
+  flex-direction: column;
+}
+.header_title {
+  color: #fff;
+}
+header {
+  background: rgb(52, 86, 155);
+  background: linear-gradient(
+    to bottom,
+    rgba(52, 86, 155, 1) 0%,
+    rgba(79, 164, 221, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#34569b', endColorstr='#4fa4dd',GradientType=0 );
+  margin-bottom: 15px;
+}
+.title {
+  border-bottom: 0.2rem solid #0097c5;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  color: #0097c5;
+  font-weight: bold;
+  margin: 0 3%;
+}
+
+.question {
+  margin: 0 3%;
+}
+
+.card {
+  content: url("../image/光明燈_暗.png");
+  width: 20%;
+  vertical-align: middle;
+  margin: 0 30%;
+}
+.card:hover {
+  content: url("../image/光明燈_亮.png");
+  width: 20%;
+  margin: 0 30%;
+  vertical-align: middle;
 }
 
 .male {
-  content: url("../image/war_shield_man.png");
+  content: url("../image/乳酸菌\(男\)_軍裝_立正.png");
+  width: 20%;
+  vertical-align: middle;
+  margin: 0 20%;
+}
+.male:hover {
+  content: url("../image/乳酸菌\(男\)_軍裝_敬禮.png");
   width: 20%;
   vertical-align: middle;
   margin: 0 20%;
 }
 .female {
-  content: url("../image/war_shield_woman.png");
+  content: url("../image/乳酸菌\(女\)_軍裝_立正.png");
+  width: 20%;
+  vertical-align: middle;
+}
+.female:hover {
+  content: url("../image/乳酸菌\(女\)_軍裝_敬禮.png");
   width: 20%;
   vertical-align: middle;
 }
 
 #lightdraw {
-  display:none;
+  display: none;
 }
-
-  
