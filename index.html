@@ -3,113 +3,99 @@
   <head>
     <link rel="stylesheet" href="./src/css/main.css" />
     <link rel="stylesheet" href="./src/lightbox/css/lightbox.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Cubic+11&display=swap" rel="stylesheet">
   </head>
 
   <body>
-    <div id="section_scope"></div>
-
     <header>
       <div class="container">
-        <a  onclick="clearSession()" href="." style="
-    text-decoration: none;">
-          <img
-            style="margin-top: -1%; height: 70px"
-            src="./src/image/土芒果社_logo.png"
-            alt="土芒果社後備軍人網路服務臺"
-            title="土芒果社後備軍人網路服務臺"
-          />
-          <h3
-            class="header_title"
-            style="position: relative; bottom: 20px; display: inline-table"
-          >
-            土芒果社後備軍人網路服務臺
-          </h3>
-        </a>
+        <marquee class="hit-hinet">敲！敲下去！不要猶豫！！！！！</marquee>
       </div>
     </header>
 
-    <div class="container">
-      <h3 class="title">果招（光明燈）資料查詢</h3>
-      <p class="question">
-        如有疑問可諮詢「土芒果社服務台」或電免付費服務電話：0800-...沒有電話，不給申訴，抽就對了。
-      </p>
-    </div>
-
-    <div id="gender-select" class="container" style="display: flex">
-      <img onclick="setGender(1)" class="male" />
-      <img onclick="setGender(2)" class="female" />
+    <div class="container" style="display: flex">
+      <img onclick="swipe()" class="hammer" />
     </div>
 
     <div id="lightdraw" class="container">
       <dialog id="checkDialog">
-        <p>抽不到嗎？要不要保底自選？</p>
+        <p>抽不到嗎:（？要不要保底自選？</p>
         <form method="dialog">
           <button onclick="guarant()">要</button>
           <button onclick="doubleCheck()">不要</button>
         </form>
       </dialog>
-      <dialog id="soldierDialog">
-        <p>錯過這個村就沒有這個店囉，你確定要跳過保底嗎？</p>
-        <form method="dialog">
-          <button onclick="closeDialog()">跳過</button>
-          <button onclick="guarant()">我還是需要那個酷酷的保底</button>
-        </form>
-      </dialog>
-      <img onclick="swipe()" class="card" />
-      <p>目前抽數:</p>
-      <h3 id="draw-count-show"></h3>
+      <p class="draw-text">目前抽數:</p>
+      <h3 class="draw-text" id="draw-count-show"></h3>
     </div>
 
     <div id="draw-show" class="container"></div>
+    <div id="image-container"></div>
+
+    <footer>
+      <div class="container">
+        <marquee class="hit-hinet">敲！敲下去！不要猶豫！！！！！</marquee>
+      </div>
+    </footer>
   </body>
 
   <script>
     let drawCount = 0;
     const checkDialog = document.getElementById("checkDialog");
     const soldierDialog = document.getElementById("soldierDialog");
-    const clearTitleElement = document.getElementById("clear-title");
 
     let swipe = () => {
+      let lightdrawElement = document.getElementById("lightdraw");
+      sessionStorage.setItem("drawCount", drawCount);
+      lightdrawElement.style.display = "block";
       let drawShowElement = document.getElementById("draw-show");
       let drawCountShowElement = document.getElementById("draw-count-show");
 
-      let basePath = "./src/image/manylight/2024/";
+      let basePath = "./src/image/manylight/2025/";
       let imageUrls = randon(basePath);
       drawShowElement.innerHTML = "";
-      setLightbox(imageUrls, drawShowElement);
       drawCountShowElement.innerHTML = drawCount;
-    };
-
-    let setLightbox = (imageUrls, drawShowElement) => {
-      for (let i = 0; i < imageUrls.length; i++) {
-        let a = document.createElement("a");
-        let img = document.createElement("img");
-        a.href = imageUrls[i];
-        a.setAttribute("data-lightbox", "roadtrip");
-        img.src = imageUrls[i];
-        img.style.width = "10rem";
-        a.append(img);
-        drawShowElement.append(a);
-      }
-    };
-
-    let setGender = (type) => {
-      let genderElement = document.getElementById("gender-select");
-      let lightdrawElement = document.getElementById("lightdraw");
-      genderElement.style.display = "none";
-      sessionStorage.setItem("gender", type);
-      sessionStorage.setItem("drawCount", drawCount);
-      lightdrawElement.style.display = "block";
     };
 
     let randon = (baseurl) => {
       let numberArray = [];
+      let imageContainer = document.getElementById("image-container");
+      imageContainer.innerHTML = ""; // 清空容器
+
+      let imagesLoaded = 0;
+
       for (let i = 0; i < 10; i++) {
         let array = new Uint16Array(1);
         crypto.getRandomValues(array);
-        let randomNumber = array[0] % 477;
-        numberArray.push(baseurl + randomNumber + ".png");
+        let randomNumber = (array[0] % 400) + 1;
+        let formattedNumber = randomNumber.toString().padStart(2, "0"); // 格式化數字
+        let imageUrl = baseurl + formattedNumber + ".png";
+        numberArray.push(imageUrl);
+
+        // 創建圖片元素並插入到容器中
+        let a = document.createElement("a");
+        a.href = imageUrl;
+        a.setAttribute("data-lightbox", "image-set");
+        let img = document.createElement("img");
+        img.src = imageUrl;
+        img.classList.add("drawn-image");
+        img.onload = () => {
+          imagesLoaded++;
+          if (imagesLoaded === 10) {
+            // 所有圖片加載完成後開始動畫
+            document.querySelectorAll(".drawn-image").forEach((image) => {
+              image.classList.add("fade-in");
+            });
+          }
+        };
+        a.appendChild(img);
+        imageContainer.appendChild(a);
       }
+
       drawCount += 10;
       sessionStorage.setItem("drawCount", drawCount);
       checkCount();
@@ -118,7 +104,7 @@
 
     let checkCount = () => {
       let drawCount = sessionStorage.getItem("drawCount");
-      if (drawCount === "300") {
+      if (Number(drawCount) % 300 === 0) {
         showDialog();
       }
     };
@@ -140,12 +126,10 @@
       soldierDialog.close();
     };
 
-    let clearSession = () => {
-      sessionStorage.clear();
-    };
-
     let guarant = () => {
-      window.location.assign("https://drive.google.com/drive/folders/1XUFxTgqhucb1rKx0axg-xOXlaZwxjCMq");
+      window.location.assign(
+        "https://drive.google.com/drive/folders/1dtm2IGBwIgnBpv1oCph4KAA4NKyzmawB"
+      );
     };
 
     window.onload = () => {
