@@ -114,14 +114,14 @@ footer .hit-hinet {
 .hammer {
   content: url("../image/hammer1.png");
   margin: 0 auto; /* 水平置中 */
-  width: 40%; /* 固定寬度 */
+  width: 35%; /* 固定寬度 */
   object-fit: cover; /* 確保圖片按比例填充 */
   display: block; /* 將圖片設為區塊元素 */
 }
 .hammer:hover {
   content: url("../image/hammer2-2.png");
   margin: 0 auto; /* 水平置中 */
-  width: 40%; /* 固定寬度 */
+  width: 35%; /* 固定寬度 */
   object-fit: cover; /* 確保圖片按比例填充 */
   display: block; /* 將圖片設為區塊元素 */
 }
@@ -135,13 +135,22 @@ footer .hit-hinet {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 20px;  /* 增加間距 */
+  padding: 20px;
 }
 
 .drawn-image {
   width: 100px;
   height: 150px;
   opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.drawn-image:hover {
+  width: 250px;
+  height: 375px;
+  z-index: 100;  
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
 
 .draw-text {
