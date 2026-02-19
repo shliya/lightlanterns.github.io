@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="./src/css/main.css" />
+    <link rel="stylesheet" href="./src/lightbox/css/lightbox.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cubic+11&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <header>
+      <div class="container">
+        <marquee class="hit-hinet">敲！敲下去！不要猶豫！！！！！</marquee>
+      </div>
+    </header>
+
+    <div class="container" style="display: flex">
+      <img onclick="swipe()" class="hammer" />
+    </div>
+
+    <div id="lightdraw" class="container">
+      <dialog id="checkDialog">
+        <p>抽不到嗎:（？要不要保底自選？</p>
+        <form method="dialog">
+          <button onclick="guarant()">要</button>
+          <button onclick="doubleCheck()">不要</button>
+        </form>
+      </dialog>
+      <dialog id="soldierDialog">
+        <p>老闆頭有點痛，你確定要跳過保底嗎？</p>
+        <form method="dialog">
+          <button onclick="closeDialog()">跳過，我要敲老闆</button>
+          <button onclick="guarant()">我還是需要那個酷酷的保底</button>
+        </form>
+      </dialog>
+      <p class="draw-text">目前抽數:</p>
+      <h3 class="draw-text" id="draw-count-show"></h3>
+    </div>
+
+    <div id="draw-show" class="container"></div>
+    <div id="image-container"></div>
+
+    <footer>
+      <div class="container">
+        <marquee class="hit-hinet">敲！敲下去！不要猶豫！！！！！</marquee>
+      </div>
+    </footer>
+  </body>
+
+  <script>
+    let drawCount = 0;
+    const checkDialog = document.getElementById("checkDialog");
+    const soldierDialog = document.getElementById("soldierDialog");
+
+    let swipe = () => {
+      let lightdrawElement = document.getElementById("lightdraw");
+      sessionStorage.setItem("drawCount", drawCount);
+      lightdrawElement.style.display = "block";
+      let drawShowElement = document.getElementById("draw-show");
+      let drawCountShowElement = document.getElementById("draw-count-show");
+
+      let basePath = "./src/image/manylight/2025/";
+      let imageUrls = randon(basePath);
+      drawShowElement.innerHTML = "";
+      drawCountShowElement.innerHTML = drawCount;
+    };
+
+    let randon = (baseurl) => {
+      let numberArray = [];
+      let imageContainer = document.getElementById("image-container");
+      imageContainer.innerHTML = ""; // 清空容器
+
+      let imagesLoaded = 0;
+
+      for (let i = 0; i < 10; i++) {
+        let array = new Uint16Array(1);
+        crypto.getRandomValues(array);
+        let randomNumber = (array[0] % 400) + 1;
+        let formattedNumber = randomNumber.toString().padStart(2, "0"); // 格式化數字
+        let imageUrl = baseurl + formattedNumber + ".png";
+        numberArray.push(imageUrl);
+
+        // 創建圖片元素並插入到容器中
+        let a = document.createElement("a");
+        a.href = imageUrl;
+        a.setAttribute("data-lightbox", "image-set");
+        let img = document.createElement("img");
+        img.src = imageUrl;
+        img.classList.add("drawn-image");
+        img.onload = () => {
+          imagesLoaded++;
+          if (imagesLoaded === 10) {
+            // 所有圖片加載完成後開始動畫
+            document.querySelectorAll(".drawn-image").forEach((image) => {
+              image.classList.add("fade-in");
+            });
+          }
+        };
+        a.appendChild(img);
+        imageContainer.appendChild(a);
+      }
+
+      drawCount += 10;
+      sessionStorage.setItem("drawCount", drawCount);
+      checkCount();
+      return numberArray;
+    };
+
+    let checkCount = () => {
+      let drawCount = sessionStorage.getItem("drawCount");
+      if (Number(drawCount) % 300 === 0) {
+        showDialog();
+      }
+    };
+
+    let showDialog = () => {
+      checkDialog.showModal();
+    };
+
+    let doubleCheck = () => {
+      checkDialog.close();
+      soldierDialog.showModal();
+    };
+
+    let closeDialog = () => {
+      window.location.assign("https://www.104.com.tw/");
+      soldierDialog.close();
+    };
+
+    let guarant = () => {
+      window.location.assign(
+        "https://drive.google.com/drive/folders/1D6Fz-guNC--_9qGI7C0V2Z-vdu5EEQJX"
+      );
+    };
+
+    window.onload = () => {
+      let genderType = sessionStorage.getItem("gender");
+      let lightdrawElement = document.getElementById("lightdraw");
+      let genderElement = document.getElementById("gender-select");
+      if (!!genderType !== false) {
+        genderElement.style.display = "none";
+        lightdrawElement.style.display = "block";
+      }
+    };
+  </script>
+  <script src="./src/lightbox/js/lightbox-plus-jquery.js"></script>
+</html>
