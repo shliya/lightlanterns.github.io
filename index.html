@@ -1,153 +1,428 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <head>
-    <link rel="stylesheet" href="./src/css/main.css" />
-    <link rel="stylesheet" href="./src/lightbox/css/lightbox.css" />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cubic+11&display=swap"
-      rel="stylesheet"
-    />
-  </head>
+    <head>
+        <link rel="stylesheet" href="./src/css/main.css" />
+        <link rel="stylesheet" href="./src/lightbox/css/lightbox.css" />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cubic+11&display=swap"
+            rel="stylesheet"
+        />
+    </head>
 
-  <body>
-    <header>
-      <div class="container">
-        <marquee class="hit-hinet">敲！敲下去！不要猶豫！！！！！</marquee>
-      </div>
-    </header>
+    <body>
+        <header>
+            <div class="container">
+                <marquee class="hit-hinet">
+                    先刮 5 格，再選一行～選到 1・2・3 就中獎！
+                </marquee>
+            </div>
+        </header>
 
-    <div class="container" style="display: flex">
-      <img onclick="swipe()" class="hammer" />
-    </div>
+        <div class="container scratch-section">
+            <p class="draw-text scratch-hint">
+                先點 5 格刮開，再選一行～該行是 1・2・3 即中獎
+            </p>
+            <p class="draw-text" id="scratch-count-show">已刮：0 / 5</p>
+            <div id="scratch-grid-wrapper" class="scratch-grid-wrapper">
+                <div id="scratch-grid" class="scratch-grid"></div>
+                <div
+                    id="line-pick-indicators"
+                    class="line-pick-indicators"
+                    aria-hidden="true"
+                ></div>
+            </div>
+            <div
+                id="line-pick-section"
+                class="line-pick-section"
+                style="display: none"
+            >
+                <p class="draw-text line-pick-hint">
+                    選一行開獎（點箭頭或手指）
+                </p>
+            </div>
+            <button type="button" id="btn-rescratch" class="btn-rescratch">
+                再抽一次
+            </button>
+        </div>
 
-    <div id="lightdraw" class="container">
-      <dialog id="checkDialog">
-        <p>抽不到嗎:（？要不要保底自選？</p>
-        <form method="dialog">
-          <button onclick="guarant()">要</button>
-          <button onclick="doubleCheck()">不要</button>
-        </form>
-      </dialog>
-      <dialog id="soldierDialog">
-        <p>老闆頭有點痛，你確定要跳過保底嗎？</p>
-        <form method="dialog">
-          <button onclick="closeDialog()">跳過，我要敲老闆</button>
-          <button onclick="guarant()">我還是需要那個酷酷的保底</button>
-        </form>
-      </dialog>
-      <p class="draw-text">目前抽數:</p>
-      <h3 class="draw-text" id="draw-count-show"></h3>
-    </div>
+        <div id="fallback-section" class="container" style="display: none">
+            <p class="draw-text">抽 10 盞燈</p>
+            <div id="image-container"></div>
+        </div>
 
-    <div id="draw-show" class="container"></div>
-    <div id="image-container"></div>
+        <footer>
+            <div class="container">
+                <marquee class="hit-hinet">
+                    先刮 5 格，再選一行～選到 1・2・3 就中獎！
+                </marquee>
+            </div>
+        </footer>
 
-    <footer>
-      <div class="container">
-        <marquee class="hit-hinet">敲！敲下去！不要猶豫！！！！！</marquee>
-      </div>
-    </footer>
-  </body>
+        <div id="daily-limit-modal" class="modal-overlay" style="display: none">
+            <div class="modal-box">
+                <p id="daily-limit-message" class="modal-message"></p>
+                <div id="daily-limit-buttons" class="modal-buttons"></div>
+            </div>
+        </div>
 
-  <script>
-    let drawCount = 0;
-    const checkDialog = document.getElementById("checkDialog");
-    const soldierDialog = document.getElementById("soldierDialog");
+        <script>
+            const GOOGLE_DRIVE_URL =
+                'https://drive.google.com/drive/folders/1gQi0-62H-QFOEVcYfiqVw72ztgF4mN41';
+            const IMAGE_BASE_PATH = './src/image/manylight/2025/';
+            const MAX_SCRATCH = 5;
+            const MAX_DAILY_PLAYS = 6;
+            const STORAGE_KEY_DAILY = 'scratchDaily';
+            const WIN_SET = new Set([1, 2, 3]);
 
-    let swipe = () => {
-      let lightdrawElement = document.getElementById("lightdraw");
-      sessionStorage.setItem("drawCount", drawCount);
-      lightdrawElement.style.display = "block";
-      let drawShowElement = document.getElementById("draw-show");
-      let drawCountShowElement = document.getElementById("draw-count-show");
+            const WIN_LINES = [
+                { indices: [0, 1, 2], label: '橫一' },
+                { indices: [3, 4, 5], label: '橫二' },
+                { indices: [6, 7, 8], label: '橫三' },
+                { indices: [0, 3, 6], label: '直一' },
+                { indices: [1, 4, 7], label: '直二' },
+                { indices: [2, 5, 8], label: '直三' },
+                { indices: [0, 4, 8], label: '斜＼' },
+                { indices: [2, 4, 6], label: '斜／' },
+            ];
 
-      let basePath = "./src/image/manylight/2025/";
-      let imageUrls = randon(basePath);
-      drawShowElement.innerHTML = "";
-      drawCountShowElement.innerHTML = drawCount;
-    };
+            let gridNumbers = [];
+            let scratchCount = 0;
+            let scratchedSet = new Set();
+            let gameEnded = false;
 
-    let randon = (baseurl) => {
-      let numberArray = [];
-      let imageContainer = document.getElementById("image-container");
-      imageContainer.innerHTML = ""; // 清空容器
+            const scratchGridEl = document.getElementById('scratch-grid');
+            const scratchCountShowEl =
+                document.getElementById('scratch-count-show');
+            const linePickSectionEl =
+                document.getElementById('line-pick-section');
+            const scratchGridWrapperEl = document.getElementById(
+                'scratch-grid-wrapper',
+            );
+            const linePickIndicatorsEl = document.getElementById(
+                'line-pick-indicators',
+            );
+            const btnRescratchEl = document.getElementById('btn-rescratch');
+            const fallbackSectionEl =
+                document.getElementById('fallback-section');
+            const imageContainerEl = document.getElementById('image-container');
+            const dailyLimitModalEl =
+                document.getElementById('daily-limit-modal');
+            const dailyLimitMessageEl = document.getElementById(
+                'daily-limit-message',
+            );
+            const dailyLimitButtonsEl = document.getElementById(
+                'daily-limit-buttons',
+            );
 
-      let imagesLoaded = 0;
+            function getTodayDateString() {
+                const d = new Date();
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return y + '-' + m + '-' + day;
+            }
 
-      for (let i = 0; i < 10; i++) {
-        let array = new Uint16Array(1);
-        crypto.getRandomValues(array);
-        let randomNumber = (array[0] % 400) + 1;
-        let formattedNumber = randomNumber.toString().padStart(2, "0"); // 格式化數字
-        let imageUrl = baseurl + formattedNumber + ".png";
-        numberArray.push(imageUrl);
+            function getDailyPlayState() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY_DAILY);
+                    if (!raw) return { date: '', count: 0 };
+                    const data = JSON.parse(raw);
+                    const today = getTodayDateString();
+                    if (data.date !== today) return { date: today, count: 0 };
+                    return data;
+                } catch {
+                    return { date: getTodayDateString(), count: 0 };
+                }
+            }
 
-        // 創建圖片元素並插入到容器中
-        let a = document.createElement("a");
-        a.href = imageUrl;
-        a.setAttribute("data-lightbox", "image-set");
-        let img = document.createElement("img");
-        img.src = imageUrl;
-        img.classList.add("drawn-image");
-        img.onload = () => {
-          imagesLoaded++;
-          if (imagesLoaded === 10) {
-            // 所有圖片加載完成後開始動畫
-            document.querySelectorAll(".drawn-image").forEach((image) => {
-              image.classList.add("fade-in");
-            });
-          }
-        };
-        a.appendChild(img);
-        imageContainer.appendChild(a);
-      }
+            function saveDailyPlayState(state) {
+                localStorage.setItem(STORAGE_KEY_DAILY, JSON.stringify(state));
+            }
 
-      drawCount += 10;
-      sessionStorage.setItem("drawCount", drawCount);
-      checkCount();
-      return numberArray;
-    };
+            function incrementDailyPlay() {
+                const state = getDailyPlayState();
+                const today = getTodayDateString();
+                if (state.date !== today) {
+                    state.date = today;
+                    state.count = 0;
+                }
+                state.count += 1;
+                saveDailyPlayState(state);
+                return state.count;
+            }
 
-    let checkCount = () => {
-      let drawCount = sessionStorage.getItem("drawCount");
-      if (Number(drawCount) % 300 === 0) {
-        showDialog();
-      }
-    };
+            function canStartNewGame() {
+                return getDailyPlayState().count < MAX_DAILY_PLAYS;
+            }
 
-    let showDialog = () => {
-      checkDialog.showModal();
-    };
+            function disableRescratchButton() {
+                btnRescratchEl.disabled = true;
+                btnRescratchEl.classList.add('btn-rescratch-disabled');
+            }
 
-    let doubleCheck = () => {
-      checkDialog.close();
-      soldierDialog.showModal();
-    };
+            function showDailyLimitModal() {
+                dailyLimitMessageEl.textContent =
+                    '這邊不是金蝶不沉迷，明天再來玩，快回去';
+                dailyLimitButtonsEl.innerHTML =
+                    '<button type="button" class="btn-modal btn-modal-yes">是</button>' +
+                    '<button type="button" class="btn-modal btn-modal-no">否</button>';
+                dailyLimitModalEl.style.display = 'flex';
 
-    let closeDialog = () => {
-      window.location.assign("https://www.104.com.tw/");
-      soldierDialog.close();
-    };
+                const btnYes =
+                    dailyLimitButtonsEl.querySelector('.btn-modal-yes');
+                const btnNo =
+                    dailyLimitButtonsEl.querySelector('.btn-modal-no');
 
-    let guarant = () => {
-      window.location.assign(
-        "https://drive.google.com/drive/folders/1D6Fz-guNC--_9qGI7C0V2Z-vdu5EEQJX"
-      );
-    };
+                btnYes.onclick = function () {
+                    dailyLimitModalEl.style.display = 'none';
+                    disableRescratchButton();
+                };
 
-    window.onload = () => {
-      let genderType = sessionStorage.getItem("gender");
-      let lightdrawElement = document.getElementById("lightdraw");
-      let genderElement = document.getElementById("gender-select");
-      if (!!genderType !== false) {
-        genderElement.style.display = "none";
-        lightdrawElement.style.display = "block";
-      }
-    };
-  </script>
-  <script src="./src/lightbox/js/lightbox-plus-jquery.js"></script>
+                btnNo.onclick = function () {
+                    dailyLimitMessageEl.textContent = '不然給你自己慢慢找';
+                    dailyLimitButtonsEl.innerHTML =
+                        '<button type="button" class="btn-modal btn-modal-ok">好</button>';
+                    const btnOk =
+                        dailyLimitButtonsEl.querySelector('.btn-modal-ok');
+                    btnOk.onclick = function () {
+                        window.open(GOOGLE_DRIVE_URL, '_blank');
+                        dailyLimitModalEl.style.display = 'none';
+                        disableRescratchButton();
+                    };
+                };
+            }
+
+            function shuffleArray(arr) {
+                const a = [...arr];
+                for (let i = a.length - 1; i > 0; i--) {
+                    const j =
+                        (crypto.getRandomValues(new Uint32Array(1))[0] %
+                            (i + 1)) >>>
+                        0;
+                    [a[i], a[j]] = [a[j], a[i]];
+                }
+                return a;
+            }
+
+            function buildGrid() {
+                gridNumbers = shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+                scratchGridEl.innerHTML = '';
+                gridNumbers.forEach((num, index) => {
+                    const cell = document.createElement('div');
+                    cell.className = 'scratch-cell';
+                    cell.dataset.index = String(index);
+                    cell.innerHTML =
+                        '<span class="scratch-number">' +
+                        num +
+                        '</span><div class="scratch-cover" aria-hidden="true"></div>';
+                    scratchGridEl.appendChild(cell);
+                });
+            }
+
+            function updateScratchCount() {
+                scratchCountShowEl.textContent =
+                    '已刮：' + scratchCount + ' / ' + MAX_SCRATCH;
+            }
+
+            function getLineValues(indices) {
+                return indices.map((i) => gridNumbers[i]);
+            }
+
+            function isLineWin(indices) {
+                const values = getLineValues(indices);
+                const valueSet = new Set(values);
+                return (
+                    valueSet.size === 3 && values.every((v) => WIN_SET.has(v))
+                );
+            }
+
+            function revealAllCells() {
+                scratchGridEl
+                    .querySelectorAll('.scratch-cover')
+                    .forEach((cover) => cover.classList.add('scratched'));
+            }
+
+            function buildLinePickIndicators() {
+                linePickIndicatorsEl.innerHTML = '';
+                const rowIcon = '👉';
+                const colIcon = '👇';
+                const diagIcons = ['↘', '↙'];
+                WIN_LINES.forEach((line, idx) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'line-pick-indicator btn-line-pick';
+                    btn.dataset.lineIndex = String(idx);
+                    if (idx <= 2) {
+                        btn.className += ' line-pick-row';
+                        btn.setAttribute('data-row', String(idx));
+                        btn.textContent = rowIcon;
+                        btn.title = line.label;
+                    } else if (idx <= 5) {
+                        btn.className += ' line-pick-col';
+                        btn.setAttribute('data-col', String(idx - 3));
+                        btn.textContent = colIcon;
+                        btn.title = line.label;
+                    } else {
+                        btn.className += ' line-pick-diag';
+                        btn.setAttribute('data-diag', String(idx - 6));
+                        btn.textContent = diagIcons[idx - 6];
+                        btn.title = line.label;
+                    }
+                    linePickIndicatorsEl.appendChild(btn);
+                });
+                scratchGridWrapperEl.classList.add('has-line-pick');
+                linePickIndicatorsEl.style.display = 'block';
+            }
+
+            function showLinePickSection() {
+                buildLinePickIndicators();
+                linePickSectionEl.style.display = 'block';
+            }
+
+            function revealCellsByIndices(indices) {
+                indices.forEach((i) => {
+                    const cell = scratchGridEl.querySelector(
+                        '[data-index="' + i + '"]',
+                    );
+                    if (!cell) return;
+                    const cover = cell.querySelector('.scratch-cover');
+                    if (cover && !cover.classList.contains('scratched')) {
+                        cover.classList.add('scratched');
+                    }
+                    cell.classList.add('chosen-line');
+                });
+            }
+
+            function hideLinePickSection() {
+                linePickSectionEl.style.display = 'none';
+                linePickIndicatorsEl.innerHTML = '';
+                linePickIndicatorsEl.style.display = 'none';
+                scratchGridWrapperEl.classList.remove('has-line-pick');
+            }
+
+            function goToPrize() {
+                window.location.assign(GOOGLE_DRIVE_URL);
+            }
+
+            function showFallbackImages() {
+                fallbackSectionEl.style.display = 'block';
+                imageContainerEl.innerHTML = '';
+                let imagesLoaded = 0;
+                const total = 10;
+
+                for (let i = 0; i < total; i++) {
+                    const randomNumber =
+                        (crypto.getRandomValues(new Uint16Array(1))[0] % 400) +
+                        1;
+                    const formatted = String(randomNumber).padStart(2, '0');
+                    const imageUrl = IMAGE_BASE_PATH + formatted + '.png';
+
+                    const a = document.createElement('a');
+                    a.href = imageUrl;
+                    a.setAttribute('data-lightbox', 'image-set');
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.classList.add('drawn-image');
+                    img.onload = () => {
+                        imagesLoaded++;
+                        if (imagesLoaded === total) {
+                            document
+                                .querySelectorAll(
+                                    '#image-container .drawn-image',
+                                )
+                                .forEach((el) => {
+                                    el.classList.add('fade-in');
+                                });
+                        }
+                    };
+                    a.appendChild(img);
+                    imageContainerEl.appendChild(a);
+                }
+            }
+
+            function finishRound(won) {
+                gameEnded = true;
+                if (won) {
+                    goToPrize();
+                    return;
+                }
+                showFallbackImages();
+            }
+
+            function onCellClick(ev) {
+                if (gameEnded) return;
+                const cover = ev.target
+                    .closest('.scratch-cell')
+                    ?.querySelector('.scratch-cover');
+                if (!cover || cover.classList.contains('scratched')) return;
+                if (scratchCount >= MAX_SCRATCH) return;
+
+                const cell = cover.closest('.scratch-cell');
+                const index = parseInt(cell.dataset.index, 10);
+                scratchedSet.add(index);
+                scratchCount++;
+                cover.classList.add('scratched');
+                updateScratchCount();
+
+                if (scratchCount >= MAX_SCRATCH) {
+                    showLinePickSection();
+                }
+            }
+
+            function onLinePick(ev) {
+                if (gameEnded) return;
+                const btn = ev.target.closest('.btn-line-pick');
+                if (!btn) return;
+                const lineIndex = parseInt(btn.dataset.lineIndex, 10);
+                const line = WIN_LINES[lineIndex];
+                if (!line) return;
+                gameEnded = true;
+                revealCellsByIndices(line.indices);
+                const won = isLineWin(line.indices);
+                finishRound(won);
+            }
+
+            function resetGame() {
+                if (!canStartNewGame()) {
+                    showDailyLimitModal();
+                    return;
+                }
+                incrementDailyPlay();
+                gridNumbers = [];
+                scratchCount = 0;
+                scratchedSet = new Set();
+                gameEnded = false;
+                fallbackSectionEl.style.display = 'none';
+                imageContainerEl.innerHTML = '';
+                hideLinePickSection();
+                buildGrid();
+                updateScratchCount();
+            }
+
+            function init() {
+                if (!canStartNewGame()) {
+                    disableRescratchButton();
+                }
+                buildGrid();
+                updateScratchCount();
+                scratchGridEl.addEventListener('click', (ev) => {
+                    if (
+                        ev.target.closest('.scratch-cover') ||
+                        ev.target.closest('.scratch-cell')
+                    ) {
+                        onCellClick(ev);
+                    }
+                });
+                linePickIndicatorsEl.addEventListener('click', onLinePick);
+                btnRescratchEl.addEventListener('click', resetGame);
+            }
+
+            init();
+        </script>
+        <script src="./src/lightbox/js/lightbox-plus-jquery.js"></script>
+    </body>
 </html>
