@@ -76,6 +76,7 @@
             const MAX_SCRATCH = 5;
             const MAX_DAILY_PLAYS = 30;
             const STORAGE_KEY_DAILY = 'scratchDaily';
+            const STORAGE_KEY_UNLIMITED = 'scratchUnlimited';
             const WIN_SET = new Set([1, 2, 3]);
 
             const WIN_LINES = [
@@ -155,13 +156,27 @@
                 return state.count;
             }
 
+            function isUnlimited() {
+                return localStorage.getItem(STORAGE_KEY_UNLIMITED) === 'true';
+            }
+
+            function setUnlimitedMode() {
+                localStorage.setItem(STORAGE_KEY_UNLIMITED, 'true');
+            }
+
             function canStartNewGame() {
+                if (isUnlimited()) return true;
                 return getDailyPlayState().count < MAX_DAILY_PLAYS;
             }
 
             function disableRescratchButton() {
                 btnRescratchEl.disabled = true;
                 btnRescratchEl.classList.add('btn-rescratch-disabled');
+            }
+
+            function enableRescratchButton() {
+                btnRescratchEl.disabled = false;
+                btnRescratchEl.classList.remove('btn-rescratch-disabled');
             }
 
             function showDailyLimitModal() {
@@ -185,13 +200,21 @@
                 btnNo.onclick = function () {
                     dailyLimitMessageEl.textContent = '不然給你自己慢慢找';
                     dailyLimitButtonsEl.innerHTML =
-                        '<button type="button" class="btn-modal btn-modal-ok">好</button>';
+                        '<button type="button" class="btn-modal btn-modal-ok">好</button>' +
+                        '<button type="button" class="btn-modal btn-modal-no2">不要</button>';
                     const btnOk =
                         dailyLimitButtonsEl.querySelector('.btn-modal-ok');
+                    const btnNo2 =
+                        dailyLimitButtonsEl.querySelector('.btn-modal-no2');
                     btnOk.onclick = function () {
                         window.open(GOOGLE_DRIVE_URL, '_blank');
                         dailyLimitModalEl.style.display = 'none';
                         disableRescratchButton();
+                    };
+                    btnNo2.onclick = function () {
+                        setUnlimitedMode();
+                        dailyLimitModalEl.style.display = 'none';
+                        enableRescratchButton();
                     };
                 };
             }
@@ -382,6 +405,7 @@
                 if (!line) return;
                 gameEnded = true;
                 revealCellsByIndices(line.indices);
+                revealAllCells();
                 const won = isLineWin(line.indices);
                 finishRound(won);
             }
@@ -391,7 +415,9 @@
                     showDailyLimitModal();
                     return;
                 }
-                incrementDailyPlay();
+                if (!isUnlimited()) {
+                    incrementDailyPlay();
+                }
                 gridNumbers = [];
                 scratchCount = 0;
                 scratchedSet = new Set();
